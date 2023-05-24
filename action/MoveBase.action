@@ -1,0 +1,7 @@
+# Define the action for moving a robot joint with velocity
+geometry_msgs/Point target_position   # Desired target position in radians
+geometry_msgs/Twist vel          # Desired velocity in radians per second
+---
+bool success              # Indicate if the action was successful
+---
+float32 feedback
