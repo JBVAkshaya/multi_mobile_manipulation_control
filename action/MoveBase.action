@@ -1,7 +1,9 @@
 # Define the action for moving a robot joint with velocity
 geometry_msgs/Point target_position   # Desired target position in radians
 geometry_msgs/Twist vel          # Desired velocity in radians per second
+float32 duration                    # Max time for reaching the target
 ---
 bool success              # Indicate if the action was successful
+float32 time_taken          # time taken to reach the target
 ---
 float32 feedback

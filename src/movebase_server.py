@@ -40,22 +40,36 @@ class MoveBaseServer:
 
 
     def execute(self, goal):
+        start_time = rospy.get_rostime()
+        rospy.loginfo("Execute time movebase: %i  secs and %i nsecs", start_time.secs, start_time.nsecs)
         success = False
         vel_twist = goal.vel
+        now_time = rospy.get_rostime()
+        while now_time.to_sec()-start_time.to_sec() < goal.duration:
+            if not self.is_valid(goal):
+                self.vel_pub.publish(vel_twist)
+                self.rate.sleep()
+            elif self.is_valid(goal):
+                success = True
+                break
+            now_time = rospy.get_rostime()
 
-        while not self.is_valid(goal):
-            self.vel_pub.publish(vel_twist)
-            self.rate.sleep()
         vel_twist.linear.x = 0.0
         self.vel_pub.publish(vel_twist)
 
         # Update the result
         result = MoveBaseResult()
-        result.success = True
+        result.success = success
+        result.time_taken = now_time.to_sec()-start_time.to_sec()
         self.server.set_succeeded(result)
 
 if __name__ == '__main__':
     rospy.init_node('move_base_server')
-    server = MoveBaseServer('r1/movebase', '/cmd_vel', '/amcl_pose')
-    print('success')
+    server = MoveBaseServer('TBwOM_1/movebase', 'TBwOM_1/cmd_vel', 'TBwOM_1/amcl_pose')
+    now = rospy.get_rostime()
+    rospy.loginfo("Current time movebase 1: %i  secs and %i nsecs", now.secs, now.nsecs)
+
+    server = MoveBaseServer('TBwOM_2/movebase', 'TBwOM_2/cmd_vel', 'TBwOM_2/amcl_pose')
+    now = rospy.get_rostime()
+    rospy.loginfo("Current time movebase 2: %i  secs and %i nsecs", now.secs, now.nsecs)
     rospy.spin()

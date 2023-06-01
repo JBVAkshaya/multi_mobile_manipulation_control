@@ -1,5 +1,7 @@
 std_msgs/Float64MultiArray target_joint_trajectory  # Desired timed trajectory in radians
+float32 duration # execution time
 ---
 bool success              # Indicate if the action was successful
+float32 time_taken
 ---
 float32 feedback

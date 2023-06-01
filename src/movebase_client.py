@@ -6,12 +6,13 @@ import actionlib
 from multi_mobile_manipulation_control.msg import MoveBaseAction, MoveBaseGoal
 from geometry_msgs.msg import Twist, Point
 def move_base_client():
-    client = actionlib.SimpleActionClient('/r1/movebase', MoveBaseAction)
+    client = actionlib.SimpleActionClient('/TBwOM_2/movebase', MoveBaseAction)
     client.wait_for_server()
     
     goal = MoveBaseGoal()
-    goal.target_position = Point(0.0,0.8,0.0)  # Target position of the joint in radians
+    goal.target_position = Point(2.0,0.8,0.0)  # Target position of the joint in radians
     goal.vel = Twist(linear=Point(-0.03,0.0,0.0),angular=Point(0.0,0.0,0.0))  # Velocity of the joint in radians per second
+    goal.duration = 5.0
     print(goal)
     client.send_goal(goal)
     client.wait_for_result()
