@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
   geometry_msgs
+  control_msgs
   message_generation
   roscpp
   rospy
@@ -74,7 +75,7 @@ add_action_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  actionlib_msgs std_msgs geometry_msgs
+  actionlib_msgs std_msgs geometry_msgs control_msgs
 )
 
 ################################################
@@ -107,10 +108,10 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
+ ## INCLUDE_DIRS include
  LIBRARIES multi_mobile_manipulation_control
- CATKIN_DEPENDS actionlib actionlib_msgs message_generation roscpp rospy std_msgs geometry_msgs
- DEPENDS system_lib
+ CATKIN_DEPENDS actionlib actionlib_msgs message_generation roscpp rospy std_msgs geometry_msgs control_msgs
+ ## DEPENDS system_lib
 )
 
 ###########

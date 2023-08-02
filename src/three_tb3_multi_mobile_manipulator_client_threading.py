@@ -30,7 +30,7 @@ class ActionClientExecutor(threading.Thread):
             rospy.loginfo("%s: Action failed.", self.ns)
 
 # Note: to start, we are going to assume each robot starts with a position of (0,0,0) and send distances based off of that
-def move_base_client(action_name, y_goal): # Made a quick modification to allow for custom y-position
+def move_base_client(action_name): # Made a quick modification to allow for custom y-position
     client = actionlib.SimpleActionClient(action_name, MoveBaseAction)
     client.wait_for_server()
     goal = MoveBaseGoal()
@@ -38,7 +38,7 @@ def move_base_client(action_name, y_goal): # Made a quick modification to allow 
 
     # Ultimately, robot 1 should end up at global position (4, 2) and robot 2 should end up at (4, 2.5)
     rospy.loginfo("test")
-    goal.target_position = Point(4.0, y_goal, 0.0)  # Target position of the joint in radians
+    goal.target_position = Point(4.0, 0.0, 0.0)  # Target position of the joint in radians
     goal.vel = Twist(linear=Point(0.1,0.0,0.0), angular=Point(0.0,0.0,0.0))  # Velocity of the joint in radians per second
     now = rospy.get_rostime()
     rospy.loginfo('base goal sent timestamp %s: %i secs %i nsecs', action_name, now.secs, now.nsecs)
@@ -78,33 +78,44 @@ def move_arm_client(action_name):
 if __name__ == '__main__':
     rospy.init_node('move_mobile_manipulator_client')
 
-    client_base_1, goal_base_1 = move_base_client('/TBwOM_1/movebase', 2.0)
+    client_base_1, goal_base_1 = move_base_client('/TBwOM_1/movebase')
     client_arm_1, goal_arm_1 = move_arm_client('/TBwOM_1/movearm')
-    client_base_2, goal_base_2 = move_base_client('/TBwOM_2/movebase', 2.5)
+    client_base_2, goal_base_2 = move_base_client('/TBwOM_2/movebase')
     client_arm_2, goal_arm_2 = move_arm_client('/TBwOM_2/movearm')
+    client_base_3, goal_base_3 = move_base_client('/TBwOM_3/movebase')
+    client_arm_3, goal_arm_3 = move_arm_client('/TBwOM_3/movearm')
 
 
     executor_base_1 = ActionClientExecutor(client_base_1, goal_base_1, 'base_1')
     executor_arm_1 = ActionClientExecutor(client_arm_1, goal_arm_1, 'arm_1')
     executor_base_2 = ActionClientExecutor(client_base_2, goal_base_2, 'base_2')
     executor_arm_2 = ActionClientExecutor(client_arm_2, goal_arm_2, 'arm_2')
+    executor_base_3 = ActionClientExecutor(client_base_3, goal_base_3, 'base_3')
+    executor_arm_3 = ActionClientExecutor(client_arm_3, goal_arm_3, 'arm_3')
 
     executor_base_1.start()
     executor_arm_1.start()
     executor_base_2.start()
     executor_arm_2.start()
+    executor_base_3.start()
+    executor_arm_3.start()
 
     # Wait for both action clients to finish
     executor_base_1.join()
     executor_arm_1.join()
     executor_base_2.join()
     executor_arm_2.join()
+    executor_base_3.join()
+    executor_arm_3.join()
 
     # Process the results - action 1
-
     result_base_1 = executor_base_1.result
     result_arm_1 = executor_arm_1.result
 
     # Process the results - action 2
     result_base_2 = executor_base_2.result
     result_arm_2 = executor_arm_2.result
+
+    # Process the results - action 3
+    result_base_3 = executor_base_3.result
+    result_arm_3 = executor_arm_3.result
