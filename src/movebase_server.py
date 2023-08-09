@@ -7,7 +7,7 @@ from multi_mobile_manipulation_control.msg import MoveBaseAction, MoveBaseResult
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, Point
 
 class MoveBaseServer:
-    def __init__(self, ns, pub_topic_name, sub_topic_name, threshold = 0.05, pub_freq = 10): # Change back the threshold to 0.05 once testing is done
+    def __init__(self, ns, pub_topic_name, sub_topic_name, threshold = 0.02, pub_freq = 10): # Change back the threshold to 0.05 once testing is done
         """Velocity control for robot base with amcl pose feedback
 
         Args:
@@ -27,9 +27,9 @@ class MoveBaseServer:
 
     def is_valid(self, goal):
         status = False
-        # if ((goal.target_position.y - self.threshold) < self.amcl_pose.y < (goal.target_position.y + self.threshold)) and \
-        #     ((goal.target_position.x - self.threshold) < self.amcl_pose.x < (goal.target_position.x + self.threshold)):
-        if ((goal.target_position.x - self.threshold) < self.amcl_pose.x < (goal.target_position.x + self.threshold)):
+        if ((goal.target_position.y - self.threshold) < self.amcl_pose.y < (goal.target_position.y + self.threshold)) and \
+            ((goal.target_position.x - self.threshold) < self.amcl_pose.x < (goal.target_position.x + self.threshold)):
+        # if ((goal.target_position.x - self.threshold) < self.amcl_pose.x < (goal.target_position.x + self.threshold)):
             status = True
         print(status)
         return status

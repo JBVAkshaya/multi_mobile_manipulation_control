@@ -34,7 +34,7 @@ def move_base_client(action_name, y_goal): # Made a quick modification to allow 
     client = actionlib.SimpleActionClient(action_name, MoveBaseAction)
     client.wait_for_server()
     goal = MoveBaseGoal()
-    goal.duration = 35
+    goal.duration = 2.0
 
     # Ultimately, robot 1 should end up at global position (4, 2) and robot 2 should end up at (4, 2.5)
     rospy.loginfo("test")
@@ -80,24 +80,24 @@ if __name__ == '__main__':
 
     # client_base_1, goal_base_1 = move_base_client('/TBwOM_1/movebase', 2.0)
     # client_arm_1, goal_arm_1 = move_arm_client('/TBwOM_1/movearm')
-    client_base_2, goal_base_2 = move_base_client('/TBwOM_2/movebase', 2.0)
+    # client_base_2, goal_base_2 = move_base_client('/TBwOM_2/movebase', 2.0)
     client_arm_2, goal_arm_2 = move_arm_client('/TBwOM_2/movearm')
 
 
     # executor_base_1 = ActionClientExecutor(client_base_1, goal_base_1, 'base_1')
     # executor_arm_1 = ActionClientExecutor(client_arm_1, goal_arm_1, 'arm_1')
-    executor_base_2 = ActionClientExecutor(client_base_2, goal_base_2, 'base_2')
+    # executor_base_2 = ActionClientExecutor(client_base_2, goal_base_2, 'base_2')
     executor_arm_2 = ActionClientExecutor(client_arm_2, goal_arm_2, 'arm_2')
 
     # executor_base_1.start()
     # executor_arm_1.start()
-    executor_base_2.start()
+    # executor_base_2.start()
     executor_arm_2.start()
 
     # Wait for both action clients to finish
     # executor_base_1.join()
     # executor_arm_1.join()
-    executor_base_2.join()
+    # executor_base_2.join()
     executor_arm_2.join()
 
     # Process the results - action 1
@@ -106,5 +106,5 @@ if __name__ == '__main__':
     # result_arm_1 = executor_arm_1.result
 
     # Process the results - action 2
-    result_base_2 = executor_base_2.result
+    # result_base_2 = executor_base_2.result
     result_arm_2 = executor_arm_2.result
