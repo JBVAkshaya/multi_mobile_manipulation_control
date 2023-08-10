@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # now = rospy.get_rostime()
     # rospy.loginfo("Current time movebase 1: %i  secs and %i nsecs", now.secs, now.nsecs)
 
-    server = MoveBaseServer('TBwOM_2/movebase', 'TBwOM_2/cmd_vel', 'TBwOM_2/amcl_pose')
+    server = MoveBaseServer('TBwOM_1/movebase', 'TBwOM_1/cmd_vel', 'TBwOM_1/amcl_pose')
     now = rospy.get_rostime()
-    rospy.loginfo("Current time movebase 2: %i  secs and %i nsecs", now.secs, now.nsecs)
+    rospy.loginfo("Current time movebase 1: %i  secs and %i nsecs", now.secs, now.nsecs)
     rospy.spin()

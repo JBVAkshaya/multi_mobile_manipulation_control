@@ -6,7 +6,7 @@ import actionlib
 from multi_mobile_manipulation_control.msg import MoveBaseAction, MoveBaseGoal
 from geometry_msgs.msg import Twist, Point
 def move_base_client():
-    client = actionlib.SimpleActionClient('/TBwOM_2/movebase', MoveBaseAction)
+    client = actionlib.SimpleActionClient('/TBwOM_1/movebase', MoveBaseAction)
     client.wait_for_server()
     
     goal = MoveBaseGoal()
