@@ -27,15 +27,17 @@ class MoveArmServer:
         
 
     def target_reached(self, goal):
+
         status = False
+
         print("target: %s curr: %s",np.array(goal.target_joint_trajectory.data[-4:]), np.array(self.true_arm_state))
         print('max diff: ', np.max(np.abs(np.array(goal.target_joint_trajectory.data[-4:]) - np.array(self.true_arm_state))))
+        
         if np.max(np.abs(goal.target_joint_trajectory.data[-4:] - np.array(self.true_arm_state)))<self.threshold:
             status = True
         print("target reached", status)
         return status
 
-    
     def get_true_arm_state(self, data):
         # TODO: Get joint state from jointState
         self.true_arm_state = data.position[2:6]
