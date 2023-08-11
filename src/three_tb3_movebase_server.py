@@ -37,7 +37,7 @@ class MoveBaseServer:
 
     def get_actual_pose(self, data):
         self.amcl_pose = data.pose.pose.position
-        print(self.amcl_pose)
+        # print(self.amcl_pose)
 
 
     def execute(self, goal):
