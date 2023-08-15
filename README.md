@@ -32,15 +32,15 @@ By default, the scripts listed in the instructions above assume you are using *t
 
 __If using one TurtleBot__:
 
-* In __Step 1__, replace `./movearm_server.py` with `./single_ns_movearm_server.py` and `./movebase_server.py` with `./single_ns_movebase_server.py`
+* In __Step 1__, replace `movearm_server.py` with `single_ns_movearm_server.py` and `movebase_server.py` with `single_ns_movebase_server.py`.
 
-* In __Step 2__, replace `./multi_mobile_manipulator_client_threading.py` with `./single_ns_multi_mobile_manipulator_client_threading.py`.
+* In __Step 2__, replace `multi_mobile_manipulator_client_threading.py` with `single_ns_multi_mobile_manipulator_client_threading.py`.
 
 __If using three TurtleBots__:
 
-* In __Step 1__, replace `./movearm_server.py` with `./three_tb3_movearm_server.py` and `./movebase_server.py` with `./three_tb3_movebase_server.py`
+* In __Step 1__, replace `movearm_server.py` with `three_tb3_movearm_server.py` and `movebase_server.py` with `three_tb3_movebase_server.py`.
 
-* In __Step 2__, replace `./multi_mobile_manipulator_client_threading.py` with `./three_tb3_multi_mobile_manipulator_client_threading.py`.
+* In __Step 2__, replace `multi_mobile_manipulator_client_threading.py` with `three_tb3_multi_mobile_manipulator_client_threading.py`.
  
 
 ## [Simulation] Instructions for Executing Multi-Robot Trajectories
