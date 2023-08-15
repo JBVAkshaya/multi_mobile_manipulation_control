@@ -44,6 +44,8 @@ def create_base_goals(robot_id, start_x, start_y, start_yaw):
     base_goal_list = []
 
     trajectories = load_json("test_trajectory.json")
+    # trajectories = load_json("test_trajectory_3.json")
+
 
     # These need to change to the hard-coded values
     current_x = start_x # m
@@ -55,6 +57,7 @@ def create_base_goals(robot_id, start_x, start_y, start_yaw):
     for dict in trajectories['results']['path']:
         conf_space = dict['conf_space'] # Grabbing conf_space data
 
+        index = 0
         # Iterate over the sub-trajectories within each trajectory
         for sub_traj in dict['trajectory']:
             # print("Robot 0's base velocities: ", sub_traj['0']['base'])
@@ -78,6 +81,9 @@ def create_base_goals(robot_id, start_x, start_y, start_yaw):
             new_goal.target_position = Point(new_x, new_y, 0.0) # x, y, z
             base_goal_list.append(new_goal)
 
+            # print("aiming for yaw ", index, ": ", new_yaw)
+            # index=index+1
+
             # Finally, we update our current positions
             current_x = new_x
             current_y = new_y
@@ -85,12 +91,15 @@ def create_base_goals(robot_id, start_x, start_y, start_yaw):
 
         # Finally, after iterating over the six sub-trajectories, we want to update the positions to the conf_space given
         # at the start of their trajectory
+
         current_x = conf_space[int(robot_id)][0]
         current_y = conf_space[int(robot_id)][1]
         current_yaw = conf_space[int(robot_id)][2]
 
+        # print("current x: ", current_x)
+
     # Return the goal list
-    # print(base_goal_list[:6])
+    print(base_goal_list[:6])
     return base_goal_list
 
 # This is the function to compute the next x, y, yaw, from current x, y, yaw, and lin/ang velocities
@@ -282,59 +291,61 @@ def execute():
     client_arm_3 = move_arm_client('/TBwOM_3/movearm')
 
     for i in range(0, len(base_goals_robot_0[:36])):
-        # goal_base_1 = base_goals_robot_0[i]
-        # goal_arm_1 = arm_goals_robot_0[i]
+        goal_base_1 = base_goals_robot_0[i]
+        goal_arm_1 = arm_goals_robot_0[i]
 
         goal_base_2 = base_goals_robot_1[i]
         goal_arm_2 = arm_goals_robot_1[i]
 
-        # goal_base_3 = base_goals_robot_2[i]
-        # goal_arm_3 = arm_goals_robot_2[i]
+        # print(base_goals_robot_1[i])
+
+        goal_base_3 = base_goals_robot_2[i]
+        goal_arm_3 = arm_goals_robot_2[i]
 
         # print("goal robot 1: ", goal_base_1 )
         # print("goal robot 2: ", goal_base_2 )
         # print("goal robot 3: ", goal_base_3 )
 
-        # executor_base_1 = ActionClientExecutor(client_base_1, goal_base_1, 'base_1')
-        # executor_arm_1 = ActionClientExecutor(client_arm_1, goal_arm_1, 'arm_1')
+        executor_base_1 = ActionClientExecutor(client_base_1, goal_base_1, 'base_1')
+        executor_arm_1 = ActionClientExecutor(client_arm_1, goal_arm_1, 'arm_1')
         executor_base_2 = ActionClientExecutor(client_base_2, goal_base_2, 'base_2')
         executor_arm_2 = ActionClientExecutor(client_arm_2, goal_arm_2, 'arm_2')
-        # executor_base_3 = ActionClientExecutor(client_base_3, goal_base_3, 'base_3')
-        # executor_arm_3 = ActionClientExecutor(client_arm_3, goal_arm_3, 'arm_3')
+        executor_base_3 = ActionClientExecutor(client_base_3, goal_base_3, 'base_3')
+        executor_arm_3 = ActionClientExecutor(client_arm_3, goal_arm_3, 'arm_3')
 
-        # executor_base_1.start()
-        # executor_arm_1.start()
+        executor_base_1.start()
+        executor_arm_1.start()
         executor_base_2.start()
         executor_arm_2.start()
-        # executor_base_3.start()
-        # executor_arm_3.start()
+        executor_base_3.start()
+        executor_arm_3.start()
 
         # Wait for both action clients to finish
-        # executor_base_1.join()
-        # executor_arm_1.join()
+        executor_base_1.join()
+        executor_arm_1.join()
         executor_base_2.join()
         executor_arm_2.join()
-        # executor_base_3.join()
-        # executor_arm_3.join()
+        executor_base_3.join()
+        executor_arm_3.join()
 
         # Process the results - action 1
-        # result_base_1 = executor_base_1.result
-        # result_arm_1 = executor_arm_1.result
+        result_base_1 = executor_base_1.result
+        result_arm_1 = executor_arm_1.result
 
         # Process the results - action 2
         result_base_2 = executor_base_2.result
         result_arm_2 = executor_arm_2.result
 
         # # Process the results - action 3
-        # result_base_3 = executor_base_3.result
-        # result_arm_3 = executor_arm_3.result
+        result_base_3 = executor_base_3.result
+        result_arm_3 = executor_arm_3.result
 
 if __name__ == '__main__':
     rospy.init_node('move_mobile_manipulator_client')
     # arm_initialization_goal('/TBwOM_1/movearm')
-    arm_initialization_goal('/TBwOM_2/movearm')
-    arm_initialization_goal('/TBwOM_3/movearm')
-    # execute() # Uncomment to run the goals
+    # arm_initialization_goal('/TBwOM_2/movearm')
+    # arm_initialization_goal('/TBwOM_3/movearm')
+    execute() # Uncomment to run the goals
 
 
 

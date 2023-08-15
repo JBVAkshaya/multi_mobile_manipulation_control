@@ -55,8 +55,8 @@ class MoveBaseServer:
                 break
             now_time = rospy.get_rostime()
 
-        vel_twist.linear.x = 0.0
-        self.vel_pub.publish(vel_twist)
+        # vel_twist.linear.x = 0.0
+        # self.vel_pub.publish(vel_twist)
 
         # Update the result
         result = MoveBaseResult()
