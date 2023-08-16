@@ -5,6 +5,7 @@ import actionlib
 import threading
 import json
 import numpy as np
+import sys
 
 from multi_mobile_manipulation_control.msg import MoveBaseAction, MoveBaseGoal, MoveArmAction, MoveArmGoal
 from geometry_msgs.msg import Twist, Point
@@ -39,11 +40,11 @@ def load_json(filename):
     return data
 
 # This function creates a list of goals, extracted from the json, to send to the robot
-def create_base_goals(robot_id, start_x, start_y, start_yaw):
+def create_base_goals(robot_id, start_x, start_y, start_yaw, json_file_path):
 
     base_goal_list = []
 
-    trajectories = load_json("test_trajectory.json")
+    trajectories = load_json(str(json_file_path))
 
     # These need to change to the hard-coded values
     current_x = start_x # m
@@ -90,7 +91,7 @@ def create_base_goals(robot_id, start_x, start_y, start_yaw):
         current_yaw = conf_space[int(robot_id)][2]
 
     # Return the goal list
-    # print(base_goal_list[:6])
+    print(base_goal_list[:6])
     return base_goal_list
 
 # This is the function to compute the next x, y, yaw, from current x, y, yaw, and lin/ang velocities
@@ -109,10 +110,10 @@ def compute_next_base_config(x, y, yaw, v_lin, v_ang, time_step):
 # Each goal is a list of timestamp followed by joint angles. The goal_list would be a list of lists,
 # where each sub-trajectory is its own list. This is a slight re-design from "single_ns_trajectory_test_movearm_client.py"
 # because I wanted to send just one 0.5s sub-trajectory to arm + base concurrently
-def create_arm_goals(robot_id, start_q1, start_q2, start_q3, start_q4):
+def create_arm_goals(robot_id, start_q1, start_q2, start_q3, start_q4, json_file_path):
     arm_goal_list = []
 
-    trajectories = load_json("test_trajectory.json")
+    trajectories = load_json(str(json_file_path))
 
     current_q1 = start_q1 # rad
     current_q2 = start_q2 # rad
@@ -263,15 +264,15 @@ def move_arm_client(action_name):
     return client
 
 # Comment/uncomment to test different robots
-def execute():
-    base_goals_robot_0 = create_base_goals('0', 0.25, 0.25, 0.0)
-    arm_goals_robot_0 = create_arm_goals('0', 0.0, 0.0, 0.0, 0.0)
+def execute(json_file_path):
+    base_goals_robot_0 = create_base_goals('0', 0.5, 0.5, 0.0, json_file_path)
+    arm_goals_robot_0 = create_arm_goals('0', 0.0, 0.0, 0.0, 0.0, json_file_path)
 
-    base_goals_robot_1 = create_base_goals('1', 0.25, 0.75, 0.0)
-    arm_goals_robot_1 = create_arm_goals('1', 0.0, 0.0, 0.0, 0.0)
+    base_goals_robot_1 = create_base_goals('1', 0.5, 1.0, 0.0, json_file_path)
+    arm_goals_robot_1 = create_arm_goals('1', 0.0, 0.0, 0.0, 0.0, json_file_path)
 
-    base_goals_robot_2 = create_base_goals('2', 0.25, 1.25, 0.0)
-    arm_goals_robot_2 = create_arm_goals('2', 0.0, 0.0, 0.0, 0.0)
+    base_goals_robot_2 = create_base_goals('2', 0.5, 1.5, 0.0, json_file_path)
+    arm_goals_robot_2 = create_arm_goals('2', 0.0, 0.0, 0.0, 0.0, json_file_path)
 
 
     client_base_1 = move_base_client('/TBwOM_1/movebase')
@@ -282,60 +283,65 @@ def execute():
     client_arm_3 = move_arm_client('/TBwOM_3/movearm')
 
     for i in range(0, len(base_goals_robot_0[:36])):
-        # goal_base_1 = base_goals_robot_0[i]
-        # goal_arm_1 = arm_goals_robot_0[i]
+        goal_base_1 = base_goals_robot_0[i]
+        goal_arm_1 = arm_goals_robot_0[i]
 
         goal_base_2 = base_goals_robot_1[i]
         goal_arm_2 = arm_goals_robot_1[i]
 
-        # goal_base_3 = base_goals_robot_2[i]
-        # goal_arm_3 = arm_goals_robot_2[i]
+        goal_base_3 = base_goals_robot_2[i]
+        goal_arm_3 = arm_goals_robot_2[i]
 
         # print("goal robot 1: ", goal_base_1 )
         # print("goal robot 2: ", goal_base_2 )
         # print("goal robot 3: ", goal_base_3 )
 
-        # executor_base_1 = ActionClientExecutor(client_base_1, goal_base_1, 'base_1')
-        # executor_arm_1 = ActionClientExecutor(client_arm_1, goal_arm_1, 'arm_1')
+        executor_base_1 = ActionClientExecutor(client_base_1, goal_base_1, 'base_1')
+        executor_arm_1 = ActionClientExecutor(client_arm_1, goal_arm_1, 'arm_1')
         executor_base_2 = ActionClientExecutor(client_base_2, goal_base_2, 'base_2')
         executor_arm_2 = ActionClientExecutor(client_arm_2, goal_arm_2, 'arm_2')
-        # executor_base_3 = ActionClientExecutor(client_base_3, goal_base_3, 'base_3')
-        # executor_arm_3 = ActionClientExecutor(client_arm_3, goal_arm_3, 'arm_3')
+        executor_base_3 = ActionClientExecutor(client_base_3, goal_base_3, 'base_3')
+        executor_arm_3 = ActionClientExecutor(client_arm_3, goal_arm_3, 'arm_3')
 
-        # executor_base_1.start()
-        # executor_arm_1.start()
+        executor_base_1.start()
+        executor_arm_1.start()
         executor_base_2.start()
         executor_arm_2.start()
-        # executor_base_3.start()
-        # executor_arm_3.start()
+        executor_base_3.start()
+        executor_arm_3.start()
 
         # Wait for both action clients to finish
-        # executor_base_1.join()
-        # executor_arm_1.join()
+        executor_base_1.join()
+        executor_arm_1.join()
         executor_base_2.join()
         executor_arm_2.join()
-        # executor_base_3.join()
-        # executor_arm_3.join()
+        executor_base_3.join()
+        executor_arm_3.join()
 
         # Process the results - action 1
-        # result_base_1 = executor_base_1.result
-        # result_arm_1 = executor_arm_1.result
+        result_base_1 = executor_base_1.result
+        result_arm_1 = executor_arm_1.result
 
         # Process the results - action 2
         result_base_2 = executor_base_2.result
         result_arm_2 = executor_arm_2.result
 
-        # # Process the results - action 3
-        # result_base_3 = executor_base_3.result
-        # result_arm_3 = executor_arm_3.result
+        # Process the results - action 3
+        result_base_3 = executor_base_3.result
+        result_arm_3 = executor_arm_3.result
 
 if __name__ == '__main__':
     rospy.init_node('move_mobile_manipulator_client')
-    # arm_initialization_goal('/TBwOM_1/movearm')
-    arm_initialization_goal('/TBwOM_2/movearm')
-    arm_initialization_goal('/TBwOM_3/movearm')
-    # execute() # Uncomment to run the goals
 
+    if(len(sys.argv) > 1):
+        json_path = sys.argv[1]
+    else:
+        print("\nPlease pass in the path to your trajectory JSON file. Thanks!\n")
+
+    # arm_initialization_goal('/TBwOM_1/movearm')
+    # arm_initialization_goal('/TBwOM_2/movearm')
+    # arm_initialization_goal('/TBwOM_3/movearm')
+    # execute(sys.argv[1]) # Uncomment to run the goals
 
 
 
